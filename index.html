@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Космический квест для Зухро</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #131932;
+      --violet: #6846eb;
+      --pink: #f36eaa;
+      --gold: #ffe170;
+      --white: #fffbe7;
+      --star: #fff8b5;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      min-height: 100vh; width: 100vw;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: var(--white);
+      background: var(--night);
+      overflow-x: hidden;
+      overscroll-behavior: none;
+    }
+    body {
+      width: 100vw; height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .skybg {
+      position: fixed; inset: 0; z-index: 0;
+      background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1200&q=80') center center/cover no-repeat;
+      filter: brightness(0.68) blur(0px) grayscale(0.07);
+    }
+    .starfield {
+      position: fixed; inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--star) 72%, transparent 100%);
+      opacity: 0.85;
+      animation: twinkle 8s infinite alternate, fly 24s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes twinkle {
+      0% { filter: brightness(1) blur(0.1px);}
+      35% { filter: brightness(1.25) blur(1.5px);}
+      70% { filter: brightness(1.04) blur(0.1px);}
+      100% { filter: brightness(0.94) blur(0.6px);}
+    }
+    @keyframes fly {
+      0% {transform: translateY(0);}
+      100% {transform: translateY(-48vh);}
+    }
+    .mainbox {
+      position: relative;
+      z-index: 2;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 100vh; width: 100vw;
+      overflow-x: hidden;
+      padding: 0;
+    }
+    .card {
+      background: linear-gradient(120deg, rgba(38,33,55,0.96) 80%, rgba(104,70,235,0.06) 100%);
+      border-radius: 33px;
+      box-shadow: 0 7px 34px #251c4565, 0 1.5px 16px #fff1;
+      padding: 44px 18px 35px 18px;
+      width: 98vw; max-width: 410px;
+      text-align: center;
+      margin: 0 auto 20px auto;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow .28s, transform .25s;
+      animation: cardFadeIn .95s cubic-bezier(.4,0,.2,1) both;
+    }
+    @keyframes cardFadeIn {
+      from { opacity:0; transform: scale(.97) translateY(35px);}
+      to { opacity:1; transform: scale(1) translateY(0);}
+    }
+    .card.hide { display: none; }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.18rem; margin: 0 0 15px 0;
+      letter-spacing: 1.3px; color: var(--gold);
+      text-shadow: 0 4px 19px #20134e77, 0 1px 8px #0007;
+    }
+    .quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.21rem; line-height: 1.58;
+      margin: 0 0 30px 0; color: #f2e7b3;
+      text-shadow: 0 1px 8px #0006;
+      text-align: center; opacity: 0.96;
+    }
+    .btn, .answer-btn, .next-btn {
+      font-size: 1.15rem; font-family: inherit;
+      background: linear-gradient(90deg, var(--violet) 30%, var(--pink) 120%);
+      color: #fff;
+      border: none;
+      border-radius: 34px;
+      padding: 15px 36px;
+      margin: 32px auto 0 auto;
+      cursor: pointer; box-shadow: 0 4px 18px #6846eb33;
+      outline: none; font-weight: 600; letter-spacing: 0.7px;
+      opacity: 0.97; transition: background 0.14s, transform 0.13s, box-shadow 0.17s;
+      display: block; width: 92%; max-width: 340px;
+      position: relative;
+    }
+    .btn:active, .answer-btn:active, .next-btn:active {
+      background: linear-gradient(90deg, #403ab8 20%, #f36eaa 100%);
+      transform: scale(0.97);
+      box-shadow: 0 2px 12px #6846eb55;
+    }
+    .btn-glow::after {
+      content: "";
+      position: absolute; left: 50%; top: 50%; pointer-events: none;
+      transform: translate(-50%, -50%);
+      width: 125%; height: 125%;
+      background: radial-gradient(circle, var(--gold) 0%, transparent 75%);
+      opacity: 0.18; border-radius: 45px;
+      z-index: -1;
+      filter: blur(10px);
+    }
+    .answers {
+      margin: 35px 0 0 0; display: flex; flex-direction: column; gap: 18px;
+      align-items: center; width: 100%;
+    }
+    .answer-btn {
+      background: linear-gradient(90deg, #23204e 10%, #be7ac2 100%);
+      font-size: 1.11rem; padding: 14px 16px;
+      border-radius: 26px; max-width: 240px; margin: 0 auto;
+      position: relative;
+      box-shadow: 0 1.5px 7px #2d246688;
+      transition: background .14s, box-shadow .18s;
+    }
+    .answer-btn:active {
+      background: linear-gradient(90deg, #332964 10%, #9f5caa 120%);
+      box-shadow: 0 1px 3px #2d246688;
+    }
+    .fade {
+      animation: fadein .8s cubic-bezier(.33,0,.5,1) both;
+    }
+    @keyframes fadein {
+      from { opacity:0; transform: translateY(34px) scale(.96);}
+      to { opacity:1; transform: none;}
+    }
+    .star-btn {
+      background: none;
+      border: none;
+      margin: 36px auto 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+      width: 85px; height: 85px;
+      cursor: pointer;
+      transition: transform 0.15s;
+      box-shadow: none;
+      outline: none;
+      position: relative;
+      z-index: 2;
+      /* no pointer-events:none! */
+    }
+    .star-btn:active {
+      transform: scale(0.93);
+    }
+    .star {
+      width: 77px; height: 77px; fill: var(--gold);
+      filter: drop-shadow(0 0 17px #ffe177cc) drop-shadow(0 0 5px #fff8);
+      display: block; margin: 0 auto;
+      animation: twinkle 1.6s infinite alternate;
+      transition: filter .18s, transform .15s;
+      pointer-events: none;
+    }
+    .shooting-star {
+      position: absolute;
+      left: 20%; top: -40px;
+      width: 110px; height: 22px;
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+      animation: shoot 1.2s cubic-bezier(.48,.2,.31,.97) 1;
+    }
+    @keyframes shoot {
+      0% { opacity:0; transform:translateX(0) translateY(0) scale(0.97);}
+      10% { opacity:.77;}
+      70% { opacity:.95;}
+      100% { opacity:0; transform:translateX(140px) translateY(66px) scale(0.8);}
+    }
+    .golden {
+      background: linear-gradient(90deg,#fffbe7 10%, #ffe170 70%,#fbe5a0 100%);
+      color: #b5950f;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: bold;
+      letter-spacing: .4px;
+      text-shadow: 0 1.5px 8px #fff5;
+    }
+    @media (max-width: 600px) {
+      .card { max-width: 99vw; padding: 24px 4vw 15px 4vw;}
+      .btn, .answer-btn, .next-btn { width: 99vw; }
+      .star-btn { margin-top: 30px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="skybg"></div>
+  <div class="starfield" id="starfield"></div>
+  <div class="mainbox">
+
+    <!-- Intro -->
+    <div class="card" id="step0">
+      <h1>Для Зухро</h1>
+      <div class="quote">
+        «Есть на свете такие города, что ночью их можно спутать со звёздами.<br>Но только одному городу повезло стать ближе к одной из них — к тебе, Зухро.»
+      </div>
+      <button class="btn btn-glow" onclick="nextStep(1)">Начать путешествие</button>
+    </div>
+
+    <!-- Вопрос 1 -->
+    <div class="card hide" id="step1">
+      <div class="fade" style="font-size:1.15rem;">
+        С чего начинается путешествие за границы привычного мира?
+      </div>
+      <div class="answers">
+        <button class="answer-btn" onclick="showMsg(1)">
+          С первой страницы книги
+        </button>
+        <button class="answer-btn" onclick="showMsg(1)">
+          С чашки кофе
+        </button>
+        <button class="answer-btn" onclick="showMsg(1)">
+          С карты, нарисованной на полях тетради
+        </button>
+      </div>
+    </div>
+    <div class="card hide" id="msg1">
+      <div class="fade">
+        Ты, как никто, знаешь: даже самая дальняя дорога начинается с одного шага — или с одной прочитанной строки.
+      </div>
+      <button class="next-btn btn-glow" onclick="nextStep(2)">Далее</button>
+    </div>
+
+    <!-- Вопрос 2 -->
+    <div class="card hide" id="step2">
+      <div class="fade" style="font-size:1.15rem;">
+        Что заставляет звёзды на небе дрожать особенно сильно?
+      </div>
+      <div class="answers">
+        <button class="answer-btn" onclick="showMsg(2)">
+          Вопросы без ответов
+        </button>
+        <button class="answer-btn" onclick="showMsg(2)">
+          Открытые книги
+        </button>
+        <button class="answer-btn" onclick="showMsg(2)">
+          Чья-то искренняя улыбка
+        </button>
+      </div>
+    </div>
+    <div class="card hide" id="msg2">
+      <div class="fade">
+        В твоих словах всегда есть пространство для тайны. Ты любишь искать, а не просто находить. Наверное, потому что сама — часть Вселенной, которую не прочитать до конца.
+      </div>
+      <button class="next-btn btn-glow" onclick="nextStep(3)">Далее</button>
+    </div>
+
+    <!-- Вопрос 3 -->
+    <div class="card hide" id="step3">
+      <div class="fade" style="font-size:1.15rem;">
+        Как называется город, в котором ночи особенно похожи на страницы непрочитанных книг?
+      </div>
+      <div class="answers">
+        <button class="answer-btn" onclick="showMsg(3,'Навкат тоже прекрасен, но сегодня речь о другом городе…')">
+          Душанбе
+        </button>
+        <button class="answer-btn" onclick="showMsg(3,'Самарканд — город мечтателей, но твоя Вселенная ближе…')">
+          Самарканд
+        </button>
+        <button class="answer-btn" onclick="showMsg(3)">
+          Нау
+        </button>
+      </div>
+    </div>
+    <div class="card hide" id="msg3">
+      <div class="fade" id="msg3txt"></div>
+      <button class="next-btn btn-glow" onclick="nextStep(4)">Далее</button>
+    </div>
+
+    <!-- Финал -->
+    <div class="card hide" id="step4">
+      <div class="fade" style="margin-bottom:30px;">
+        Иногда кажется, что большие мечты рождаются в самых тихих местах.<br>
+        <span class="golden">Нау стал для меня немного другим с тех пор, как я встретил тебя.</span>
+      </div>
+      <div style="margin: 16px 0 28px 0; font-size: 1.06rem; color:#fbe8d7;">
+        <em>Открой финальную тайну — загадай желание и прикоснись к звезде.</em>
+      </div>
+      <button class="star-btn" id="starBtn" type="button" onclick="shootingStar();nextStep(5)" aria-label="Открыть поздравление">
+        <svg class="star" viewBox="0 0 64 64">
+          <polygon points="32,5 40,26 62,26 44,39 50,59 32,47 14,59 20,39 2,26 24,26"/>
+        </svg>
+      </button>
+      <div class="shooting-star" id="shooting"></div>
+    </div>
+
+    <!-- Поздравление -->
+    <div class="card hide" id="step5">
+      <div class="fade">
+        Спасибо, что позволяешь читать тебя между строк.<br><br>
+        Ты — редкое сочетание разума и глубины, лёгкости и тайны.<br>
+        <span class="golden">Оставайся собой.</span><br>
+        <span style="font-size:1.2rem; color:#ffe97b;">Мир нуждается в таких людях, как ты.</span>
+        <div style="margin-top:24px; font-size:1.35rem;">⭐️</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Живое космическое небо
+    function starfield(){
+      let s = '';
+      for(let i=0;i<44;i++){
+        let x=Math.random()*100, y=Math.random()*100, sz=0.9+Math.random()*2.4, d=Math.random()*7, spd=16+Math.random()*30;
+        s+=`<span class="star" style="left:${x}vw;top:${y}vh;width:${sz}px;height:${sz}px;animation-delay:${d}s;animation-duration:${spd}s, 8s;"></span>`;
+      }
+      document.getElementById('starfield').innerHTML = s;
+    }
+    starfield();
+
+    // Шаги
+    function hideAll() {
+      for(let i=0;i<=5;i++){
+        let s=document.getElementById('step'+i), m=document.getElementById('msg'+i);
+        if(s) s.classList.add('hide');
+        if(m) m.classList.add('hide');
+      }
+    }
+    function nextStep(n) {
+      hideAll();
+      let s=document.getElementById('step'+n);
+      if(s) s.classList.remove('hide');
+      window.scrollTo(0,0);
+      if (n===5) setTimeout(()=>{document.activeElement && document.activeElement.blur && document.activeElement.blur()}, 100);
+    }
+    function showMsg(n, altText){
+      hideAll();
+      let m=document.getElementById('msg'+n);
+      if(n===3){
+        let txt = altText || "Иногда кажется, что большие мечты рождаются в самых тихих местах. Нау стал для меня немного другим с тех пор, как я встретил тебя.";
+        document.getElementById('msg3txt').textContent = txt;
+      }
+      if(m) m.classList.remove('hide');
+      window.scrollTo(0,0);
+    }
+    // Shooting star
+    function shootingStar(){
+      let el = document.getElementById('shooting');
+      el.innerHTML = '<svg width="110" height="22" viewBox="0 0 110 22"><defs><linearGradient id="sgrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ffe170" stop-opacity="1"/><stop offset="80%" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><ellipse cx="17" cy="11" rx="12" ry="4" fill="url(#sgrad)"/><rect x="18" y="9" width="80" height="4" rx="2" fill="url(#sgrad)" /><circle cx="18" cy="11" r="6" fill="#ffe170"></circle></svg>';
+      el.style.opacity = "1";
+      setTimeout(function(){el.style.opacity="0";},1200);
+      let btn = document.getElementById('starBtn');
+      if(btn){
+        btn.style.transform = 'scale(1.14)';
+        setTimeout(()=>{btn.style.transform='scale(1)';},270);
+      }
+    }
+  </script>
+</body>
+</html>
