@@ -37,24 +37,24 @@
       position: fixed; inset: 0;
       z-index: 1;
       pointer-events: none;
+      width: 100vw; height: 100vh;
     }
     .star {
       position: absolute;
       border-radius: 50%;
       background: radial-gradient(circle, var(--star) 72%, transparent 100%);
-      opacity: 0.85;
-      animation: twinkle 8s infinite alternate, fly 24s linear infinite;
+      opacity: 0.78;
+      animation: twinkle 8s infinite alternate, fly 25s linear infinite;
       pointer-events: none;
     }
     @keyframes twinkle {
       0% { filter: brightness(1) blur(0.1px);}
-      35% { filter: brightness(1.25) blur(1.5px);}
-      70% { filter: brightness(1.04) blur(0.1px);}
+      50% { filter: brightness(1.25) blur(1.3px);}
       100% { filter: brightness(0.94) blur(0.6px);}
     }
     @keyframes fly {
       0% {transform: translateY(0);}
-      100% {transform: translateY(-48vh);}
+      100% {transform: translateY(-50vh);}
     }
     .mainbox {
       position: relative;
@@ -65,17 +65,19 @@
       padding: 0;
     }
     .card {
-      background: linear-gradient(120deg, rgba(38,33,55,0.96) 80%, rgba(104,70,235,0.06) 100%);
+      background: linear-gradient(120deg, rgba(38,33,55,0.97) 80%, rgba(104,70,235,0.06) 100%);
       border-radius: 33px;
       box-shadow: 0 7px 34px #251c4565, 0 1.5px 16px #fff1;
       padding: 44px 18px 35px 18px;
       width: 98vw; max-width: 410px;
+      min-width: 0;
       text-align: center;
       margin: 0 auto 20px auto;
       position: relative;
       overflow: hidden;
       transition: box-shadow .28s, transform .25s;
       animation: cardFadeIn .95s cubic-bezier(.4,0,.2,1) both;
+      box-sizing: border-box;
     }
     @keyframes cardFadeIn {
       from { opacity:0; transform: scale(.97) translateY(35px);}
@@ -84,30 +86,33 @@
     .card.hide { display: none; }
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.18rem; margin: 0 0 15px 0;
+      font-size: 2.1rem; margin: 0 0 15px 0;
       letter-spacing: 1.3px; color: var(--gold);
       text-shadow: 0 4px 19px #20134e77, 0 1px 8px #0007;
+      word-break: break-word;
     }
     .quote {
       font-family: 'Playfair Display', serif;
-      font-size: 1.21rem; line-height: 1.58;
+      font-size: 1.12rem; line-height: 1.5;
       margin: 0 0 30px 0; color: #f2e7b3;
       text-shadow: 0 1px 8px #0006;
-      text-align: center; opacity: 0.96;
+      text-align: center; opacity: 0.97;
+      word-break: break-word;
     }
     .btn, .answer-btn, .next-btn {
-      font-size: 1.15rem; font-family: inherit;
+      font-size: 1.1rem; font-family: inherit;
       background: linear-gradient(90deg, var(--violet) 30%, var(--pink) 120%);
       color: #fff;
       border: none;
       border-radius: 34px;
       padding: 15px 36px;
-      margin: 32px auto 0 auto;
+      margin: 30px auto 0 auto;
       cursor: pointer; box-shadow: 0 4px 18px #6846eb33;
       outline: none; font-weight: 600; letter-spacing: 0.7px;
       opacity: 0.97; transition: background 0.14s, transform 0.13s, box-shadow 0.17s;
-      display: block; width: 92%; max-width: 340px;
+      display: block; width: 95%; max-width: 340px;
       position: relative;
+      box-sizing: border-box;
     }
     .btn:active, .answer-btn:active, .next-btn:active {
       background: linear-gradient(90deg, #403ab8 20%, #f36eaa 100%);
@@ -118,23 +123,25 @@
       content: "";
       position: absolute; left: 50%; top: 50%; pointer-events: none;
       transform: translate(-50%, -50%);
-      width: 125%; height: 125%;
+      width: 120%; height: 120%;
       background: radial-gradient(circle, var(--gold) 0%, transparent 75%);
-      opacity: 0.18; border-radius: 45px;
+      opacity: 0.15; border-radius: 45px;
       z-index: -1;
-      filter: blur(10px);
+      filter: blur(8px);
     }
     .answers {
-      margin: 35px 0 0 0; display: flex; flex-direction: column; gap: 18px;
+      margin: 32px 0 0 0; display: flex; flex-direction: column; gap: 18px;
       align-items: center; width: 100%;
     }
     .answer-btn {
       background: linear-gradient(90deg, #23204e 10%, #be7ac2 100%);
-      font-size: 1.11rem; padding: 14px 16px;
+      font-size: 1.05rem; padding: 13px 15px;
       border-radius: 26px; max-width: 240px; margin: 0 auto;
       position: relative;
       box-shadow: 0 1.5px 7px #2d246688;
       transition: background .14s, box-shadow .18s;
+      width: 97%;
+      box-sizing: border-box;
     }
     .answer-btn:active {
       background: linear-gradient(90deg, #332964 10%, #9f5caa 120%);
@@ -150,26 +157,25 @@
     .star-btn {
       background: none;
       border: none;
-      margin: 36px auto 0 auto;
+      margin: 32px auto 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0;
       border-radius: 50%;
-      width: 85px; height: 85px;
+      width: 80px; height: 80px;
       cursor: pointer;
       transition: transform 0.15s;
       box-shadow: none;
       outline: none;
       position: relative;
       z-index: 2;
-      /* no pointer-events:none! */
     }
     .star-btn:active {
       transform: scale(0.93);
     }
     .star {
-      width: 77px; height: 77px; fill: var(--gold);
+      width: 68px; height: 68px; fill: var(--gold);
       filter: drop-shadow(0 0 17px #ffe177cc) drop-shadow(0 0 5px #fff8);
       display: block; margin: 0 auto;
       animation: twinkle 1.6s infinite alternate;
@@ -201,9 +207,17 @@
       text-shadow: 0 1.5px 8px #fff5;
     }
     @media (max-width: 600px) {
-      .card { max-width: 99vw; padding: 24px 4vw 15px 4vw;}
-      .btn, .answer-btn, .next-btn { width: 99vw; }
-      .star-btn { margin-top: 30px; }
+      .card {
+        max-width: 99vw;
+        min-width: 0;
+        padding: 18vw 2vw 10vw 2vw;
+        font-size: 1rem;
+      }
+      .btn, .answer-btn, .next-btn { width: 99vw; max-width: 99vw; }
+      .star-btn { margin-top: 30px; width: 68px; height: 68px;}
+      .star { width: 58px; height: 58px; }
+      h1 { font-size: 1.45rem; }
+      .quote { font-size: 1rem; }
     }
   </style>
 </head>
@@ -324,7 +338,7 @@
     function starfield(){
       let s = '';
       for(let i=0;i<44;i++){
-        let x=Math.random()*100, y=Math.random()*100, sz=0.9+Math.random()*2.4, d=Math.random()*7, spd=16+Math.random()*30;
+        let x=Math.random()*100, y=Math.random()*100, sz=0.9+Math.random()*2.4, d=Math.random()*7, spd=18+Math.random()*20;
         s+=`<span class="star" style="left:${x}vw;top:${y}vh;width:${sz}px;height:${sz}px;animation-delay:${d}s;animation-duration:${spd}s, 8s;"></span>`;
       }
       document.getElementById('starfield').innerHTML = s;
